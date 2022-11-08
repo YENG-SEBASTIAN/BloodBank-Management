@@ -1,0 +1,78 @@
+{%load static%}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+      
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+ 
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+
+    <!-- Main CSS-->
+    <link href="{% static "css/main.css" %}"rel="stylesheet" media="all">
+    <style>
+
+    </style>
+    
+  </head>
+  <body>
+
+
+
+    <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+        <div class="wrapper wrapper--w790">
+            <br><br><br>
+            <div class="card card-5">
+                <div class="card-heading">
+                    <h2 class="title">Confirm Payment</h2>
+                </div>
+                <div class="card-body" style="background-color: rgba(10, 250, 250, 0.7);">
+
+                        <div>
+                            <h3>Confirm payment of: GHS {{payment.amount}} </h3>
+                            <br><br>
+                            <script src="https://js.paystack.co/v1/inline.js"></script>
+                            <button class="btn btn--radius-2 btn-danger" onclick="payWithPayStack()" type="submit" id="djanggo-payWithPayStack-Btn">Confirm Payment</button>
+                        </div>
+        
+                    <br>
+                </div>
+                <script>
+                    function payWithPayStack(){
+                        let currency = "GHS";
+                        let plan = "";
+                        let reference = "{{payment.ref}}";
+                        let obj = {
+                            key : "{{PAYSTACK_TEST_PUBLIC_KEYS}}",
+                            email : "{{payment.email}}",
+                            amount : "{{payment.amount_value}}",
+                            ref : reference,
+                            callback : function(response){
+                                window.location.href = "{% url 'verify-payment' payment.ref%}"
+                            }
+                        }
+                        if(Boolean(currency)){
+                            obj.currency = currency.toUpperCase()
+                        }
+                        if(Boolean(plan)){
+                            obj.plan = plan
+                        }
+                        var handler = PaystackPop.setup(obj);
+                        handler.openIframe();
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+
+<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  </body>
+</html>
